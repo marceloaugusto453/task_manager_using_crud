@@ -34,11 +34,11 @@ def get_all_users(db: Session) -> List[UserModel]:
     return db.query(UserModel).all()
 
 
-def update_user(db: Session, user_id: int, user_update: UserUpdate) -> Optional[UserModel]:
+def update_user(db: Session, user_id: int, user: UserUpdate) -> Optional[UserModel]:
     db_user = get_user(db, user_id)
     if not db_user:
         return None
-    update_data = user_update.dict(exclude_unset=True)
+    update_data = user.dict(exclude_unset=True)
     for key, value in update_data.items():
         setattr(db_user, key, value)
     db.commit()
@@ -47,12 +47,10 @@ def update_user(db: Session, user_id: int, user_update: UserUpdate) -> Optional[
 
 
 def delete_user(db: Session, user_id: int) -> bool:
-    db_user = get_user(db, user_id)
-    if not db_user:
-        return False
+    db_user = db.query(UserModel).filter(UserModel.user_id == user_id).first()
     db.delete(db_user)
     db.commit()
-    return True
+    return db_user
 
 
 
@@ -73,11 +71,11 @@ def get_all_projects(db: Session) -> List[ProjectModel]:
     return db.query(ProjectModel).all()
 
 
-def update_project(db: Session, project_id: int, project_update: ProjectUpdate) -> Optional[ProjectModel]:
+def update_project(db: Session, project_id: int, project: ProjectUpdate) -> Optional[ProjectModel]:
     db_project = get_project(db, project_id)
     if not db_project:
         return None
-    update_data = project_update.dict(exclude_unset=True)
+    update_data = project.dict(exclude_unset=True)
     for key, value in update_data.items():
         setattr(db_project, key, value)
     db.commit()
@@ -86,12 +84,10 @@ def update_project(db: Session, project_id: int, project_update: ProjectUpdate) 
 
 
 def delete_project(db: Session, project_id: int) -> bool:
-    db_project = get_project(db, project_id)
-    if not db_project:
-        return False
+    db_project = db.query(ProjectModel).filter(ProjectModel.project_id == project_id).first()
     db.delete(db_project)
     db.commit()
-    return True
+    return db_project
 
 
 # -------------------- TASKS -------------------- #
@@ -118,11 +114,11 @@ def get_all_tasks(db: Session) -> List[TaskModel]:
     return db.query(TaskModel).all()
 
 
-def update_task(db: Session, task_id: int, task_update: TaskUpdate) -> Optional[TaskModel]:
+def update_task(db: Session, task_id: int, task: TaskUpdate) -> Optional[TaskModel]:
     db_task = get_task(db, task_id)
     if not db_task:
         return None
-    update_data = task_update.dict(exclude_unset=True)
+    update_data = task.dict(exclude_unset=True)
     for key, value in update_data.items():
         setattr(db_task, key, value)
     db.commit()
@@ -131,9 +127,7 @@ def update_task(db: Session, task_id: int, task_update: TaskUpdate) -> Optional[
 
 
 def delete_task(db: Session, task_id: int) -> bool:
-    db_task = get_task(db, task_id)
-    if not db_task:
-        return False
+    db_task = db.query(TaskModel).filter(TaskModel.task_id == task_id).first()
     db.delete(db_task)
     db.commit()
-    return True
+    return db_task

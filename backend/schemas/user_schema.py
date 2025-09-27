@@ -10,7 +10,7 @@ class UserBase(BaseModel):
 class UserCreate(UserBase):
     pass
 
-class UserResponse(ProductBase):
+class UserResponse(UserBase):
     user_id: int
     created_at: datetime
 
@@ -20,4 +20,4 @@ class UserResponse(ProductBase):
 class UserUpdate(BaseModel):
     name: Optional[str] = None
     email: Optional[str] = None
-    area: Option[str] = None
+    area: Optional[str] = None

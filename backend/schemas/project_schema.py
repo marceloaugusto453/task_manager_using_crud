@@ -1,7 +1,7 @@
-from pydantic import BaseModel, validator, PositiveFloat, EmailStr, validator, Field
+from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional
-from enum import Enum
+
 
 class ProjectBase(BaseModel):
     project_name: str
@@ -16,7 +16,7 @@ class ProjectUpdate(BaseModel):
     project_description: Optional[str] = None
 
 class ProjectResponse(ProjectBase):
-    id: int
+    project_id: int
     created_at: datetime
 
     class Config:

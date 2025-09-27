@@ -1,6 +1,9 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from sqlalchemy.sql import func
 from backend.database import Base
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
+
 
 class TaskModel(Base):
     __tablename__ = "task_table"
@@ -14,5 +17,5 @@ class TaskModel(Base):
     project_id = Column(Integer, ForeignKey("project_table.project_id"), nullable=False)
     user_id = Column(Integer, ForeignKey("user_table.user_id"),nullable=False)
 
-    project = relationship("ProjectModel",back_populates='task_table')
-    responsible = relationship("UserModel",back_populates='task_table')
+    project = relationship("ProjectModel",back_populates='tasks')
+    responsible = relationship("UserModel",back_populates='tasks')

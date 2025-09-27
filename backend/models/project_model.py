@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 from backend.database import Base
+
 
 class ProjectModel(Base):
     __tablename__ = "project_table"
@@ -10,4 +12,4 @@ class ProjectModel(Base):
     project_description = Column(String, index = True)
     created_at = Column(DateTime(timezone=True),default=func.now(),index=True)
 
-    task = relationship("Task", back_populates="project_table")
+    tasks = relationship("TaskModel", back_populates="project")
