@@ -18,7 +18,9 @@ router = APIRouter()
 def create_user_route(user: UserCreate, db: Session = Depends(get_db)):
     try:
         return create_user(db=db, user=user)
+    
     except IntegrityError as e:
+        db.rollback()
         detail = "Error creating the user"
 
         if "null value in column" in str(e):

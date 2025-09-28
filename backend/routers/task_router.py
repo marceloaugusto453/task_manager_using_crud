@@ -54,9 +54,11 @@ def update_task_route(task_id: int, task: TaskUpdate, db: Session = Depends(get_
             detail=f"Internal error in database: {e}"
         )
 
-@router.delete("/task/{task_id}", response_model=TaskResponse)
+@router.delete("/task/{task_id}", status_code=200) 
 def delete_task_route(task_id: int, db: Session = Depends(get_db)):
-    db_task = delete_task(db, task_id=task_id)
-    if db_task is None:
+    db_task_data = delete_task(db, task_id=task_id)
+    
+    if db_task_data is None:
         raise HTTPException(status_code=404, detail="Task not found")
-    return db_task
+        
+    return {"message": f"Task ID {task_id} deleted successfully!", "deleted_id": task_id}
