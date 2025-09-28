@@ -9,16 +9,15 @@ API_BASE = "http://backend:8000/api"
 def dashboard_management_section():
     st.title("📊 Dashboard - Task Manager")
     
-    # --- Puxa dados da API (Mantido) ---
-    @st.cache_data(ttl=600) # Mantive o cache de 10 minutos
+
+    @st.cache_data(ttl=600) 
     def load_data():
         try:
-            # Requisitando todas as tarefas para a análise
             tasks_response = requests.get(f"{API_BASE}/task/")
             users_response = requests.get(f"{API_BASE}/user/")
             projects_response = requests.get(f"{API_BASE}/project/")
             
-            # Garante que todas as requisições foram bem-sucedidas
+
             tasks_response.raise_for_status() 
             users_response.raise_for_status() 
             projects_response.raise_for_status()
@@ -30,7 +29,6 @@ def dashboard_management_section():
 
     users, projects, tasks = load_data()
 
-    # Cria DataFrames
     df_users = pd.DataFrame(users)
     df_tasks = pd.DataFrame(tasks)
     
