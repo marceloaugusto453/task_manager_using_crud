@@ -1,7 +1,9 @@
 version: '3.8'
+
 services:
   postgres:
-    image: postgres:latest
+    image: postgres:15
+    container_name: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -10,32 +12,40 @@ services:
       POSTGRES_PASSWORD: password
     networks:
       - mynetwork
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d mydatabase"]
+      interval: 5s
+      retries: 5
+      start_period: 10s
 
   backend:
     build: 
       context: .
       dockerfile: backend/Dockerfile
+    container_name: backend
     volumes:
       - ./backend:/app/backend
     environment:
-      DATABASE_URL: postgresql://user:password@postgres/mydatabase
+      DATABASE_URL: postgresql://user:password@postgres:5432/mydatabase
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     networks:
       - mynetwork
 
-  # frontend:
-  #   build: 
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - ./frontend:/app
-  #   ports:
-  #     - "8501:8501"
-  #   networks:
-  #     - mynetwork
+  frontend:
+    build: 
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: frontend
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "8501:8501"
+    networks:
+      - mynetwork
 
 networks:
   mynetwork:
